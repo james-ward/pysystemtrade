@@ -16,7 +16,13 @@ def index():
 
 @app.route("/traffic_lights")
 def traffic_lights():
-    pass
+    traffic_lights = {
+        "stack": "green",
+        "gateway": "red",
+        "prices": "orange",
+        "capital": 123456,
+        "breaks": "green"
+    }
 
 
 @app.route("/rolls")
