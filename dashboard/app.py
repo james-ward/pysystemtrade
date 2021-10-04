@@ -14,27 +14,17 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/traffic_lights")
+def traffic_lights():
+    pass
+
+
 @app.route("/rolls")
 def rolls():
     # If we have a dictionary, Flask will automatically json-ify it
     data = dataBlob(log_name="dashboard")
     diag_prices = diagPrices(data)
-    return {
-        "CORN": {
-            "status": "No_roll",
-            "roll_expiry": 10,
-            "carry_expiry": 20,
-            "price_expiry": 30,
-            "contract_labels": ["fee", "fi", "fo"],
-        },
-        "MXP": {
-            "status": "No_roll",
-            "roll_expiry": 10,
-            "carry_expiry": 20,
-            "price_expiry": 30,
-            "contract_labels": ["fee", "fi", "fo"],
-        },
-    }
+
     all_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()
     report = {}
     for instrument in all_instruments:
