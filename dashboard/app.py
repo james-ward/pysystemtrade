@@ -37,7 +37,6 @@ def rolls():
     report = {}
     for instrument in all_instruments:
         report[instrument] = roll_report.get_roll_data_for_instrument(instrument, data)
-    pprint(report)
     return report
 
 

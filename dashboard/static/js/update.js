@@ -18,6 +18,8 @@ $(document).ready(function(){
     type: "GET",
     url: "/rolls",
     success: function(data) {
+      $("#rolls_status > tbody").empty();
+      $("#rolls_details > tbody").empty();
       $.each(data, function(contract, details) {
         $("#rolls_status tbody").append(`
           <tr><td>${contract}</td>
