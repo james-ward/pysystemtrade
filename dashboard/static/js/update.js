@@ -1,6 +1,21 @@
 $(document).ready(function(){
   $.ajax({
     type: "GET",
+    url: "/traffic_lights",
+    success: function(data) {
+      $.each(data, function(k,v) {
+        $("#"+k).addClass(v);
+      }
+      );
+    }
+  }
+  );
+  }
+);
+
+$(document).ready(function(){
+  $.ajax({
+    type: "GET",
     url: "/rolls",
     success: function(data) {
       $.each(data, function(contract, details) {

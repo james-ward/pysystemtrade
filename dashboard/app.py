@@ -21,9 +21,10 @@ def traffic_lights():
         "stack": "green",
         "gateway": "red",
         "prices": "orange",
-        "capital": 123456,
+        # "capital": 123456,
         "breaks": "green",
     }
+    return traffic_lights
 
 
 @app.route("/rolls")
