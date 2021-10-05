@@ -19,9 +19,10 @@ def index():
 @app.route("/capital")
 def capital():
     capital_data = dataCapital(data)
-    capital_series = capital_data.get_series_of_accumulated_capital()
-    pprint(capital_series)
-    return {}
+    capital_series = capital_data.get_series_of_all_global_capital()
+    now = capital_series.iloc[-1]['capital_value']
+    yesterday = capital_series.last('1D').iloc[0]['capital_value']
+    return {'now': now, 'yesterday': yesterday}
 
 @app.route("/traffic_lights")
 def traffic_lights():
