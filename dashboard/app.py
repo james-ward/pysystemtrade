@@ -4,16 +4,24 @@ from sysdata.data_blob import dataBlob
 
 from sysproduction.data.prices import diagPrices
 from sysproduction.reporting import roll_report
+from sysproduction.data.capital import dataCapital
 
 from pprint import pprint
 
 app = Flask(__name__)
 
+data = dataBlob(log_name="dashboard")
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+@app.route("/capital")
+def capital():
+    capital_data = dataCapital(data)
+    capital_series = capital_data.get_series_of_accumulated_capital()
+    pprint(capital_series)
+    return {}
 
 @app.route("/traffic_lights")
 def traffic_lights():
@@ -30,7 +38,6 @@ def traffic_lights():
 @app.route("/rolls")
 def rolls():
     # If we have a dictionary, Flask will automatically json-ify it
-    data = dataBlob(log_name="dashboard")
     diag_prices = diagPrices(data)
 
     all_instruments = diag_prices.get_list_of_instruments_in_multiple_prices()

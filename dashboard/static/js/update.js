@@ -1,7 +1,7 @@
 $(document).ready(function(){
   $.ajax({
     type: "GET",
-    url: "/traffic_lights",
+    url: "/capital",
     success: function(data) {
       $.each(data, function(k,v) {
         //$("#"+k).addClass(v);
