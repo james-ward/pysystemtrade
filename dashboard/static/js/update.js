@@ -3,7 +3,7 @@ $(document).ready(function(){
     type: "GET",
     url: "/capital",
     success: function(data) {
-      $('#capital-tl').html(data['now']);
+      $('#capital-tl').html('$'+data['now'].toLocaleString());
       if (data['now'] >= data['yesterday']) {
         $('#capital-tl').addClass('green');
       } else {
