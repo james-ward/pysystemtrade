@@ -5,6 +5,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices
 from sysproduction.reporting import roll_report
 
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def traffic_lights():
         "gateway": "red",
         "prices": "orange",
         "capital": 123456,
-        "breaks": "green"
+        "breaks": "green",
     }
 
 
@@ -35,6 +36,7 @@ def rolls():
     report = {}
     for instrument in all_instruments:
         report[instrument] = roll_report.get_roll_data_for_instrument(instrument, data)
+    pprint(report)
     return report
 
 
