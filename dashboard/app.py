@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, g
+from werkzeug.local import LocalProxy
 
 from sysdata.data_blob import dataBlob
 
@@ -12,8 +13,17 @@ from pprint import pprint
 
 app = Flask(__name__)
 
-data = dataBlob(log_name="dashboard")
-data_broker = dataBroker(data)
+def get_data():
+    if 'data' not in g:
+        g.data = dataBlob(log_name="dashboard")
+    return g.data
+data = LocalProxy(get_data)
+
+def get_data_broker():
+    if 'data_broker' not in g:
+        g.data_broker = dataBroker(data)
+    return g.data_broker
+data_broker = LocalProxy(get_data_broker)
 
 
 @app.route("/")
