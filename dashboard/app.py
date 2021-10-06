@@ -18,13 +18,13 @@ def get_data():
         g.data = dataBlob(log_name="dashboard")
     return g.data
 data = LocalProxy(get_data)
-"""
+
 def get_data_broker():
     if 'data_broker' not in g:
         g.data_broker = dataBroker(data)
     return g.data_broker
 data_broker = LocalProxy(get_data_broker)
-"""
+
 
 @app.route("/")
 def index():
@@ -42,8 +42,6 @@ def capital():
 
 @app.route("/strategy")
 def strategy():
-    data = dataBlob(log_name="dashboard")
-    data_broker = dataBroker(data)
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
     optimal_positions = data_optimal.get_pd_of_position_breaks().to_dict()
@@ -56,9 +54,9 @@ def strategy():
         }
     pprint(strategies)
     
-    ans2 = data_broker.get_db_contract_positions_with_IB_expiries().to_dict()
+    ans2 = data_broker.get_db_contract_positions_with_IB_expiries().as_pd_df().to_dict()
     pprint(ans2)
-    ans3 = data_broker.get_all_current_contract_positions().to_dict()
+    ans3 = data_broker.get_all_current_contract_positions().as_pd_df().to_dict()
     pprint(ans3)
     
     breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
