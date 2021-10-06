@@ -18,13 +18,13 @@ def get_data():
         g.data = dataBlob(log_name="dashboard")
     return g.data
 data = LocalProxy(get_data)
-
+"""
 def get_data_broker():
     if 'data_broker' not in g:
         g.data_broker = dataBroker(data)
     return g.data_broker
 data_broker = LocalProxy(get_data_broker)
-
+"""
 
 @app.route("/")
 def index():
@@ -42,6 +42,7 @@ def capital():
 
 @app.route("/strategy")
 def strategy():
+    data_broker = dataBroker(data)
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
     optimal_positions = data_optimal.get_pd_of_position_breaks().to_dict()
