@@ -42,6 +42,7 @@ def capital():
 
 @app.route("/strategy")
 def strategy():
+    data = dataBlob(log_name="dashboard")
     data_broker = dataBroker(data)
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
