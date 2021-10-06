@@ -8,6 +8,9 @@ from sysproduction.data.broker import dataBroker
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.positions import diagPositions, dataOptimalPositions
 
+import importlib
+import sys
+
 from pprint import pprint
 
 app = Flask(__name__)
@@ -32,7 +35,7 @@ def capital():
 @app.route("/strategy")
 def strategy():
     data_broker = dataBroker(data)
-    
+
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
     optimal_positions = data_optimal.get_pd_of_position_breaks().to_dict()
