@@ -8,14 +8,12 @@ from sysproduction.data.broker import dataBroker
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.positions import diagPositions, dataOptimalPositions
 
-import importlib
-import sys
-
 from pprint import pprint
 
 app = Flask(__name__)
 
 data = dataBlob(log_name="dashboard")
+data_broker = dataBroker(data)
 
 
 @app.route("/")
@@ -34,8 +32,6 @@ def capital():
 
 @app.route("/strategy")
 def strategy():
-    data_broker = dataBroker(data)
-
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
     optimal_positions = data_optimal.get_pd_of_position_breaks().to_dict()
@@ -47,14 +43,14 @@ def strategy():
             "current": optimal_positions["current"][instrument],
         }
     pprint(strategies)
-    """
+    
     ans2 = data_broker.get_db_contract_positions_with_IB_expiries().to_dict()
     pprint(ans2)
     ans3 = data_broker.get_all_current_contract_positions().to_dict()
     pprint(ans3)
-    """
+    
     breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
-    # breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
+    breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
     return {"overall": "green", "strategy": strategies}
 
 
