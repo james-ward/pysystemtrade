@@ -91,5 +91,5 @@ def rolls():
 
 
 if __name__ == "__main__":
-    strategy()
-    #app.run(use_debugger=False, use_reloader=False, passthrough_errors=True)
+    #strategy()
+    app.run(threaded=False, use_debugger=False, use_reloader=False, passthrough_errors=True)
