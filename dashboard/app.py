@@ -35,6 +35,13 @@ def get_data_broker():
 data_broker = LocalProxy(get_data_broker)
 
 
+@app.teardown_appcontext
+def close_data_broker(exception):
+    top = _app_ctx_stack.top
+    if hasattr(top, "data_broker"):
+        del top.data_broker
+
+
 @app.route("/")
 def index():
     return render_template("index.html")
