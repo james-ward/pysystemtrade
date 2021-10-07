@@ -6,6 +6,7 @@ from sysdata.data_blob import dataBlob
 from sysproduction.data.prices import diagPrices
 from sysproduction.reporting import roll_report
 from sysproduction.data.broker import dataBroker
+from sysproduction.data.control_process import dataControlProcess
 from sysproduction.data.capital import dataCapital
 from sysproduction.data.positions import diagPositions, dataOptimalPositions
 
@@ -37,6 +38,21 @@ data_broker = LocalProxy(get_data_broker)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/processes")
+def processes():
+    data_control = dataControlProcess(data)
+    control_process_data = data_control.db_control_process_data
+    names = control_process_data.get_list_of_process_names()
+    pprint(names)
+    running_modes = {}
+    for name in names:
+        running_modes[name] = control_process_data.get_control_for_process_name(
+            name
+        ).running_mode_str
+    processes = data_control.get_dict_of_control_processes()
+    return {"running_modes": running_modes}
 
 
 @app.route("/capital")
