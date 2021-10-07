@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g
+from flask import Flask, render_template, _app_ctx_stack
 from werkzeug.local import LocalProxy
 
 from sysdata.data_blob import dataBlob
@@ -13,16 +13,24 @@ from pprint import pprint
 
 app = Flask(__name__)
 
+
 def get_data():
-    if 'data' not in g:
-        g.data = dataBlob(log_name="dashboard")
-    return g.data
+    top = _app_ctx_stack.top
+    if not hasattr(top, "data"):
+        top.data = dataBlob(log_name="dashboard")
+    return top.data
+
+
 data = LocalProxy(get_data)
 
+
 def get_data_broker():
-    if 'data_broker' not in g:
-        g.data_broker = dataBroker(data)
-    return g.data_broker
+    top = _app_ctx_stack.top
+    if not hasattr(top, "data_broker"):
+        top.data_broker = dataBroker(get_data())
+    return top.data_broker
+
+
 data_broker = LocalProxy(get_data_broker)
 
 
@@ -53,12 +61,12 @@ def strategy():
             "current": optimal_positions["current"][instrument],
         }
     pprint(strategies)
-    
+
     ans2 = data_broker.get_db_contract_positions_with_IB_expiries().as_pd_df().to_dict()
     pprint(ans2)
     ans3 = data_broker.get_all_current_contract_positions().as_pd_df().to_dict()
     pprint(ans3)
-    
+
     breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
     breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
     return {"overall": "green", "strategy": strategies}
@@ -89,5 +97,7 @@ def rolls():
 
 
 if __name__ == "__main__":
-    #strategy()
-    app.run(threaded=False, use_debugger=False, use_reloader=False, passthrough_errors=True)
+    # strategy()
+    app.run(
+        threaded=False, use_debugger=False, use_reloader=False, passthrough_errors=True
+    )
