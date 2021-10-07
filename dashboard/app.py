@@ -48,8 +48,8 @@ def capital():
     return {"now": now, "yesterday": yesterday}
 
 
-@app.route("/strategy")
-def strategy():
+@app.route("/reconcile")
+def reconcile():
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
     optimal_positions = data_optimal.get_pd_of_position_breaks().to_dict()
@@ -60,16 +60,41 @@ def strategy():
             "optimal": str(optimal_positions["optimal"][instrument]),
             "current": optimal_positions["current"][instrument],
         }
-    pprint(strategies)
 
-    ans2 = data_broker.get_db_contract_positions_with_IB_expiries().as_pd_df().to_dict()
-    pprint(ans2)
-    ans3 = data_broker.get_all_current_contract_positions().as_pd_df().to_dict()
-    pprint(ans3)
+    db_contract_pos = (
+        data_broker.get_db_contract_positions_with_IB_expiries().as_pd_df().to_dict()
+    )
+    positions = {}
+    for idx in db_contract_pos["instrument_code"].keys():
+        code = db_contract_pos["instrument_code"][idx]
+        contract_date = db_contract_pos["contract_date"][idx]
+        position = db_contract_pos["position"][idx]
+        positions[code + "-" + contract_date] = {
+            "code": code,
+            "contract_date": contract_date,
+            "db_position": position,
+        }
+    ib_contract_pos = (
+        data_broker.get_all_current_contract_positions().as_pd_df().to_dict()
+    )
+    for idx in ib_contract_pos["instrument_code"].keys():
+        code = ib_contract_pos["instrument_code"][idx]
+        contract_date = ib_contract_pos["contract_date"][idx]
+        position = ib_contract_pos["position"][idx]
+        positions[code + "-" + contract_date]["ib_position"] = position
 
-    breaks = diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
-    breaks = data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
-    return {"overall": "green", "strategy": strategies}
+    db_breaks = (
+        diag_positions.get_list_of_breaks_between_contract_and_strategy_positions()
+    )
+    ib_breaks = (
+        data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
+    )
+    return {
+        "strategy": strategies,
+        "positions": positions,
+        "db_breaks": db_breaks,
+        "ib_breaks": ib_breaks,
+    }
 
 
 @app.route("/traffic_lights")
