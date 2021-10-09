@@ -1,4 +1,4 @@
-from flask import Flask, render_template, _app_ctx_stack
+from quart import Quart, render_template, _app_ctx_stack
 from werkzeug.local import LocalProxy
 
 from sysdata.data_blob import dataBlob
@@ -12,7 +12,7 @@ from sysproduction.data.positions import diagPositions, dataOptimalPositions
 
 from pprint import pprint
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 
 def get_data():
@@ -43,12 +43,12 @@ def close_data_broker(exception):
 
 
 @app.route("/")
-def index():
-    return render_template("index.html")
+async def index():
+    return await render_template("index.html")
 
 
 @app.route("/processes")
-def processes():
+async def processes():
     data_control = dataControlProcess(data)
     control_process_data = data_control.db_control_process_data
     names = control_process_data.get_list_of_process_names()
@@ -59,20 +59,20 @@ def processes():
             name
         ).running_mode_str
     processes = data_control.get_dict_of_control_processes()
-    return {"running_modes": running_modes}
+    return await {"running_modes": running_modes}
 
 
 @app.route("/capital")
-def capital():
+async def capital():
     capital_data = dataCapital(data)
     capital_series = capital_data.get_series_of_all_global_capital()
     now = capital_series.iloc[-1]["Actual"]
     yesterday = capital_series.last("1D").iloc[0]["Actual"]
-    return {"now": now, "yesterday": yesterday}
+    return await {"now": now, "yesterday": yesterday}
 
 
 @app.route("/reconcile")
-def reconcile():
+async def reconcile():
     diag_positions = diagPositions(data)
     data_optimal = dataOptimalPositions(data)
     optimal_positions = data_optimal.get_pd_of_position_breaks().to_dict()
@@ -112,7 +112,7 @@ def reconcile():
     ib_breaks = (
         data_broker.get_list_of_breaks_between_broker_and_db_contract_positions()
     )
-    return {
+    return await {
         "strategy": strategies,
         "positions": positions,
         "db_breaks": db_breaks,
@@ -121,7 +121,7 @@ def reconcile():
 
 
 @app.route("/traffic_lights")
-def traffic_lights():
+async def traffic_lights():
     traffic_lights = {
         "stack": "green",
         "gateway": "red",
@@ -129,11 +129,11 @@ def traffic_lights():
         # "capital": 123456,
         "breaks": "green",
     }
-    return traffic_lights
+    return await traffic_lights
 
 
 @app.route("/rolls")
-def rolls():
+async def rolls():
     # If we have a dictionary, Flask will automatically json-ify it
     diag_prices = diagPrices(data)
 
@@ -141,11 +141,11 @@ def rolls():
     report = {}
     for instrument in all_instruments:
         report[instrument] = roll_report.get_roll_data_for_instrument(instrument, data)
-    return report
+    return await report
 
 
 if __name__ == "__main__":
     # strategy()
     app.run(
-        threaded=False, use_debugger=False, use_reloader=False, passthrough_errors=True
+        threaded=True, use_debugger=False, use_reloader=False, passthrough_errors=True
     )
