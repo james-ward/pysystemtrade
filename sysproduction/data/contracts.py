@@ -117,6 +117,7 @@ class dataContracts(productionDataLayerGeneric):
             contract, ignore_duplication=ignore_duplication
         )
 
+    @lru_cache
     def get_all_contract_objects_for_instrument_code(self, instrument_code: str) -> listOfFuturesContracts:
         list_of_contracts = \
             self.db_contract_data.get_all_contract_objects_for_instrument_code(
@@ -125,6 +126,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return list_of_contracts
 
+    @lru_cache
     def get_labelled_list_of_contracts_from_contract_date_list(self, instrument_code: str,
                                                                list_of_dates: listOfContractDateStr) -> list:
         current_contracts = self.get_current_contract_dict(instrument_code)
@@ -136,12 +138,14 @@ class dataContracts(productionDataLayerGeneric):
         return labelled_list
 
 
+    @lru_cache
     def get_all_sampled_contracts(self, instrument_code: str) -> listOfFuturesContracts:
         all_contracts = self.get_all_contract_objects_for_instrument_code(instrument_code)
         sampled_contracts = all_contracts.currently_sampling()
 
         return sampled_contracts
 
+    @lru_cache
     def get_labelled_dict_of_current_contracts(self, instrument_code: str) -> dict:
 
         current_contracts = self.get_current_contract_dict(instrument_code)
@@ -155,6 +159,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return ans_as_dict
    
+
     @lru_cache
     def get_current_contract_dict(self, instrument_code) ->setOfNamedContracts:
         multiple_prices = self.db_multiple_prices_data.get_multiple_prices(
@@ -171,12 +176,14 @@ class dataContracts(productionDataLayerGeneric):
         )
         return roll_parameters
 
+    @lru_cache
     def get_contract_from_db(self, contract:futuresContract) -> futuresContract:
         db_contract = self.get_contract_from_db_given_code_and_id(instrument_code=contract.instrument_code,
                                                                   contract_id=contract.date_str)
 
         return db_contract
 
+    @lru_cache
     def get_contract_from_db_given_code_and_id(self, instrument_code: str, contract_id: str) -> futuresContract:
 
         contract_object = self.db_contract_data.get_contract_object(
@@ -186,6 +193,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return contract_object
 
+    @lru_cache
     def _get_actual_expiry(self, instrument_code: str, contract_id: str) -> expiryDate:
         contract_object = self.get_contract_from_db_given_code_and_id(
             instrument_code, contract_id)
@@ -194,30 +202,36 @@ class dataContracts(productionDataLayerGeneric):
 
         return expiry_date
 
+    @lru_cache
     def get_priced_contract_id(self, instrument_code: str) -> str:
         contract_dict = self.get_current_contract_dict(instrument_code)
         price_contract = contract_dict.price
 
         return price_contract
 
+    @lru_cache
     def _get_carry_contract_id(self, instrument_code: str)->str:
         contract_dict = self.get_current_contract_dict(instrument_code)
         carry_contract = contract_dict.carry
         return carry_contract
 
+    @lru_cache
     def get_forward_contract_id(self, instrument_code: str) -> str:
         contract_dict = self.get_current_contract_dict(instrument_code)
         carry_contract = contract_dict.forward
         return carry_contract
 
+    @lru_cache
     def get_priced_expiry(self, instrument_code: str) -> expiryDate:
         contract_id = self.get_priced_contract_id(instrument_code)
         return self._get_actual_expiry(instrument_code, contract_id)
 
+    @lru_cache
     def get_carry_expiry(self, instrument_code: str) -> expiryDate:
         contract_id = self._get_carry_contract_id(instrument_code)
         return self._get_actual_expiry(instrument_code, contract_id)
 
+    @lru_cache
     def when_to_roll_priced_contract(self, instrument_code: str) -> datetime.datetime:
         priced_contract_id = self.get_priced_contract_id(instrument_code)
 
@@ -229,6 +243,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return contract_date_with_roll_parameters.desired_roll_date
 
+    @lru_cache
     def get_contract_date_object_with_roll_parameters(
         self, instrument_code:str, contract_date_str:str
     ) -> contractDateWithRollParameters:
