@@ -87,6 +87,7 @@ class diagVolumes(productionDataLayerGeneric):
 
         return final_volume
 
+    @ttl_cache(ttl=10, maxsize=None)
     def get_daily_volumes_for_contract(self, contract: futuresContract) -> pd.Series:
         price_data = self.db_futures_contract_price_data.get_prices_for_contract_object(contract)
 
@@ -107,8 +108,6 @@ def normalise_volumes(smoothed_volumes: list) -> list:
 
     return normalised_volumes
 
-@freeze_series
-@ttl_cache(ttl=10, maxsize=None)
 def get_smoothed_volume_ignoring_old_data(volumes: pd.Series,
                                           ignore_before_days =14,
                                           span: int = 3) -> float:
