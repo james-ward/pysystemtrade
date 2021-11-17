@@ -15,3 +15,8 @@ p = pstats.Stats('rolls')
 p.sort_stats(SortKey.CUMULATIVE).print_stats(30)
 
 p.sort_stats(SortKey.TIME).print_stats(30)
+
+p.sort_stats(SortKey.CALLS).print_stats(30)
+
+# Get cache info
+print(data.get_normalised_smoothed_volumes_of_contract_list.get_cache_info())
