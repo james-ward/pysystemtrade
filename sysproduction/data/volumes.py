@@ -64,7 +64,6 @@ class diagVolumes(productionDataLayerGeneric):
 
         return smoothed_volumes
 
-    @ttl_cache(ttl=10)
     def get_smoothed_volume_for_contract(
             self, instrument_code:str,
             contract_date_str: str) -> float:
@@ -78,7 +77,6 @@ class diagVolumes(productionDataLayerGeneric):
 
         return final_volume
 
-    @ttl_cache(ttl=10)
     def get_daily_volumes_for_contract(self, contract: futuresContract) -> pd.Series:
         price_data = self.db_futures_contract_price_data.get_prices_for_contract_object(contract)
 
