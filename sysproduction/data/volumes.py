@@ -111,7 +111,6 @@ def normalise_volumes(smoothed_volumes: list) -> list:
 def get_smoothed_volume_ignoring_old_data(volumes: pd.Series,
                                           ignore_before_days =14,
                                           span: int = 3) -> float:
-    volumes = unfreeze_series(volumes)
     if volumes is missing_data:
         return 0.0
 
