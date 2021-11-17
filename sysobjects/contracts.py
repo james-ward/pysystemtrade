@@ -116,7 +116,7 @@ class futuresContract(object):
             return False
 
     def __hash__(self):
-        return hash(self.instrument + self.date_str)
+        return hash(self.instrument_code + self.date_str)
 
     @property
     def key(self):
