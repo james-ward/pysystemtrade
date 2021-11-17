@@ -22,12 +22,12 @@ def deep_freeze(thing):
     from frozendict import frozendict
     if thing is None or isinstance(thing, str):
         return thing
+    elif isinstance(thing, pd.Series):
+        return tuple(thing.to_dict(OrderedDict).items())
     elif isinstance(thing, Mapping):
         return frozendict({k: deep_freeze(v) for k, v in thing.items()})
     elif isinstance(thing, Collection):
         return tuple(deep_freeze(i) for i in thing)
-    elif isinstance(thing, pd.Series):
-        return tuple(thing.to_dict(OrderedDict).items())
     elif not isinstance(thing, Hashable):
         raise TypeError(f"unfreezable type: '{type(thing)}'")
     else:
@@ -139,6 +139,7 @@ def normalise_volumes(smoothed_volumes: list) -> list:
 def get_smoothed_volume_ignoring_old_data(volumes: pd.Series,
                                           ignore_before_days =14,
                                           span: int = 3) -> float:
+    print(volumes)
     volumes = unfreeze_series(volumes)
     if volumes is missing_data:
         return 0.0
