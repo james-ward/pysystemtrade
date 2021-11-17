@@ -14,3 +14,4 @@ Werkzeug>=2.0.1
 cvxpy>=1.1.15
 statsmodels==0.12.2
 cachetools>=4.2.4
+frozendict>=2.0.7
