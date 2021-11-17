@@ -25,7 +25,6 @@ class diagVolumes(productionDataLayerGeneric):
     def db_futures_contract_price_data(self) -> futuresContractPriceData:
         return self.data.db_futures_contract_price
 
-    @ttl_cache(ttl=10)
     def get_normalised_smoothed_volumes_of_contract_list(
         self,
             instrument_code:str,
@@ -45,7 +44,6 @@ class diagVolumes(productionDataLayerGeneric):
 
         return normalised_volumes
 
-    @ttl_cache(ttl=10)
     def get_smoothed_volumes_of_contract_list(
         self, instrument_code:str,
             contract_date_str_list: list
@@ -101,6 +99,7 @@ def normalise_volumes(smoothed_volumes: list) -> list:
 
     return normalised_volumes
 
+@ttl_cache(ttl=10)
 def get_smoothed_volume_ignoring_old_data(volumes: pd.Series,
                                           ignore_before_days =14,
                                           span: int = 3) -> float:
