@@ -19,4 +19,4 @@ p.sort_stats(SortKey.TIME).print_stats(30)
 p.sort_stats(SortKey.CALLS).print_stats(30)
 
 # Get cache info
-print(data.get_normalised_smoothed_volumes_of_contract_list.get_cache_info())
+#print(reporting_api.table_of_roll_data.get_normalised_smoothed_volumes_of_contract_list.get_cache_info())

@@ -69,6 +69,7 @@ def get_roll_data_for_instrument_DEPRECATED(instrument_code, data):
     return results_dict_code
 
 
+@ttl_cache(ttl=10, maxsize=None)
 def get_roll_data_for_instrument(instrument_code, data):
     """
     Get roll data for an individual instrument
@@ -112,6 +113,7 @@ def get_roll_data_for_instrument(instrument_code, data):
 
     return results_dict_code
 
+@ttl_cache(ttl=10, maxsize=None)
 def relative_volume_in_forward_contract_versus_price(data: dataBlob,
                                         instrument_code: str) -> float:
 
@@ -119,6 +121,7 @@ def relative_volume_in_forward_contract_versus_price(data: dataBlob,
 
     return volumes[1]
 
+@ttl_cache(ttl=10, maxsize=None)
 def relative_volume_in_forward_contract_and_price(data: dataBlob,
                                         instrument_code: str) -> list:
 
@@ -159,6 +162,7 @@ class rollingAdjustedAndMultiplePrices(object):
         )
         print("")
 
+    @ttl_cache(ttl=10, maxsize=None)
     @property
     def current_multiple_prices(self):
         current_multiple_prices = getattr(self, "_current_multiple_prices", None)
@@ -168,6 +172,7 @@ class rollingAdjustedAndMultiplePrices(object):
 
         return current_multiple_prices
 
+    @ttl_cache(ttl=10, maxsize=None)
     @property
     def current_adjusted_prices(self):
         current_adjusted_prices = getattr(self, "_current_adjusted_prices", None)
@@ -187,6 +192,7 @@ class rollingAdjustedAndMultiplePrices(object):
 
         return updated_multiple_prices
 
+    @ttl_cache(ttl=10, maxsize=None)
     @property
     def new_adjusted_prices(self):
         new_adjusted_prices = getattr(self, "_new_adjusted_prices", None)

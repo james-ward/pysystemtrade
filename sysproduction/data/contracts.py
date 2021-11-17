@@ -47,6 +47,7 @@ class dataContracts(productionDataLayerGeneric):
     def db_roll_parameters(self) -> rollParametersData:
         return self.data.db_roll_parameters
 
+    @ttl_cache(ttl=10, maxsize=None)
     def days_until_roll(self, instrument_code) -> int:
         when_to_roll = self.when_to_roll_priced_contract(instrument_code)
         now = datetime.datetime.now()
@@ -54,6 +55,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return when_to_roll_days
 
+    @ttl_cache(ttl=10, maxsize=None)
     def days_until_price_expiry(self, instrument_code: str) -> int:
         price_expiry = self.get_priced_expiry(instrument_code)
         now = datetime.datetime.now()
@@ -61,6 +63,7 @@ class dataContracts(productionDataLayerGeneric):
 
         return price_expiry_days
 
+    @ttl_cache(ttl=10, maxsize=None)
     def days_until_carry_expiry(self, instrument_code: str) -> int:
         carry_expiry = self.get_carry_expiry(instrument_code)
         now = datetime.datetime.now()
@@ -70,6 +73,7 @@ class dataContracts(productionDataLayerGeneric):
 
 
 
+    @ttl_cache(ttl=10, maxsize=None)
     def is_contract_in_data(self, contract: futuresContract):
         instrument_code = contract.instrument_code
         contract_date_str = contract.date_str

@@ -9,6 +9,7 @@ from syslogdiag.logger import logger
 from sysobjects.contract_dates_and_expiries import contractDate, expiryDate
 from sysobjects.instruments import futuresInstrument
 
+from cachetools.func import ttl_cache
 
 
 NO_ROLL_CYCLE_PASSED = object()

@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import datetime as datetime
 import pandas as pd
 
@@ -12,38 +11,12 @@ from sysdata.data_blob import dataBlob
 
 from sysproduction.data.generic_production_data import productionDataLayerGeneric
 
+from syscore.genutils import deep_freeze_args, unfreeze_series
+
 # Get volume data for the contract we're currently trading, plus what we might roll into, plus the previous one
 # This is handy for working out whether to roll
 
 NOTIONALLY_ZERO_VOLUME = 0.0001
-
-def deep_freeze(thing):
-    from collections.abc import Collection, Mapping, Hashable
-    from frozendict import frozendict
-    if thing is None or isinstance(thing, str):
-        return thing
-    elif isinstance(thing, pd.Series):
-        return tuple(thing.to_dict(OrderedDict).items())
-    elif isinstance(thing, Mapping):
-        return frozendict({k: deep_freeze(v) for k, v in thing.items()})
-    elif isinstance(thing, Collection):
-        return tuple(deep_freeze(i) for i in thing)
-    elif not isinstance(thing, Hashable):
-        raise TypeError(f"unfreezable type: '{type(thing)}'")
-    else:
-        return thing
-
-
-def deep_freeze_args(func):
-    import functools
-
-    @functools.wraps(func)
-    def wrapped(*args, **kwargs):
-        return func(*deep_freeze(args), **deep_freeze(kwargs))
-    return wrapped
-
-def unfreeze_series(frozen_series):
-    return pd.Series(OrderedDict((x, y) for x, y in frozen_series))
 
 class diagVolumes(productionDataLayerGeneric):
     def _add_required_classes_to_data(self, data) -> dataBlob:

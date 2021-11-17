@@ -8,8 +8,11 @@ from math import copysign, gcd
 from copy import copy
 import sys
 import numpy as np
+import pandas as pd
 import datetime
 import functools
+from frozendict import frozendict
+from collections import OrderedDict
 
 def true_if_answer_is_yes(prompt=""):
     invalid = True
@@ -489,6 +492,35 @@ def np_convert(val):
     :return: val as native type
     """
     return val.item() if isinstance(val, np.generic) else val
+
+def deep_freeze(thing):
+    from collections.abc import Collection, Mapping, Hashable
+    if thing is None or isinstance(thing, str):
+        return thing
+    elif isinstance(thing, pd.Series):
+        return tuple(thing.to_dict(OrderedDict).items())
+    elif isinstance(thing, Mapping):
+        return frozendict({k: deep_freeze(v) for k, v in thing.items()})
+    elif isinstance(thing, Collection):
+        return tuple(deep_freeze(i) for i in thing)
+    elif not isinstance(thing, Hashable):
+        raise TypeError(f"unfreezable type: '{type(thing)}'")
+    else:
+        return thing
+
+
+def deep_freeze_args(func):
+    from functools import wraps
+
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        return func(*deep_freeze(args), **deep_freeze(kwargs))
+    return wrapped
+
+def unfreeze_series(frozen_series):
+    from pandas import Series
+    return Series(OrderedDict((x, y) for x, y in frozen_series))
+
 
 if __name__ == "__main__":
     import doctest
