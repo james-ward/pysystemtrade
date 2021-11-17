@@ -139,10 +139,10 @@ def normalise_volumes(smoothed_volumes: list) -> list:
 def get_smoothed_volume_ignoring_old_data(volumes: pd.Series,
                                           ignore_before_days =14,
                                           span: int = 3) -> float:
-    print(volumes)
-    volumes = unfreeze_series(volumes)
     if volumes is missing_data:
         return 0.0
+
+    volumes = unfreeze_series(volumes)
 
     # ignore anything more than say 2 weeks old (so we don't get stale data)
     two_weeks_ago = datetime.datetime.now() - datetime.timedelta(days=ignore_before_days)
