@@ -1,5 +1,7 @@
 import datetime
 
+from functools import lru_cache
+
 from syscore.objects import missing_contract,  missing_data
 
 from sysdata.arctic.arctic_futures_per_contract_prices import arcticFuturesContractPriceData
@@ -152,7 +154,8 @@ class dataContracts(productionDataLayerGeneric):
         )
 
         return ans_as_dict
-
+   
+    @lru_cache
     def get_current_contract_dict(self, instrument_code) ->setOfNamedContracts:
         multiple_prices = self.db_multiple_prices_data.get_multiple_prices(
             instrument_code)
@@ -161,6 +164,7 @@ class dataContracts(productionDataLayerGeneric):
         return current_contracts
 
 
+    @lru_cache
     def get_roll_parameters(self, instrument_code: str) -> rollParameters:
         roll_parameters = self.db_roll_parameters.get_roll_parameters(
             instrument_code
