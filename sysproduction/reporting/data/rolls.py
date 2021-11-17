@@ -71,7 +71,8 @@ def get_roll_data_for_instrument_DEPRECATED(instrument_code, data):
     return results_dict_code
 
 
-@ttl_cache(ttl=10, maxsize=None)
+@profile
+#@ttl_cache(ttl=10, maxsize=None)
 def get_roll_data_for_instrument(instrument_code, data):
     """
     Get roll data for an individual instrument

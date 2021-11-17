@@ -36,6 +36,7 @@ class futuresMultiplePricesData(baseData):
     def __getitem__(self, instrument_code: str) ->futuresMultiplePrices:
         return self.get_multiple_prices(instrument_code)
 
+    @profile
     def get_multiple_prices(self, instrument_code: str) -> futuresMultiplePrices:
         if self.is_code_in_data(instrument_code):
             multiple_prices= self._get_multiple_prices_without_checking(instrument_code)

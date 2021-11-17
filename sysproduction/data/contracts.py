@@ -165,6 +165,7 @@ class dataContracts(productionDataLayerGeneric):
    
 
     @ttl_cache(ttl=10, maxsize=None)
+    @profile
     def get_current_contract_dict(self, instrument_code) ->setOfNamedContracts:
         multiple_prices = self.db_multiple_prices_data.get_multiple_prices(
             instrument_code)
@@ -207,6 +208,7 @@ class dataContracts(productionDataLayerGeneric):
         return expiry_date
 
     @ttl_cache(ttl=10, maxsize=None)
+    @profile
     def get_priced_contract_id(self, instrument_code: str) -> str:
         contract_dict = self.get_current_contract_dict(instrument_code)
         price_contract = contract_dict.price

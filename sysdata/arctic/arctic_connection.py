@@ -39,6 +39,7 @@ class arcticData(object):
         return f"Arctic connection: host {clean_mongo_host(self.host)}, " \
                f"db {self.database_name}, collection {self.collection_name}"
 
+    @profile
     def read(self, ident) -> pd.DataFrame:
         item = self.library.read(ident)
         return pd.DataFrame(item.data)
